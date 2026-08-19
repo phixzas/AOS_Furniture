@@ -12,7 +12,7 @@ const defaultGallery = [
 ]
 
 const whatsappLink = 'https://wa.me/2348144293899'
-const instagramLink = 'https://www.instagram.com/aosfurniture/'
+const instagramLink = 'https://www.instagram.com/aos_furniture__interior/'
 const mapsLink = 'https://maps.app.goo.gl/LRwNh4N4PAAEA4Y59?g_st=ac'
 const mapsEmbed = 'https://www.google.com/maps?q=184+Ipaja+Rd,+Idimu,+Lagos+102213,+Lagos&output=embed'
 const secondMapsLink = 'https://maps.app.goo.gl/M739YETfevVQ22zC6'
