@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import servicesBackground from '../modern-sofa-1024x602.jpg'
+import defaultLogo from '../f75Ke.jpg'
 import 'leaflet/dist/leaflet.css'
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
 
@@ -82,9 +83,9 @@ function AdminPage({ logo, setLogo, gallery, setGallery, services, setServices, 
 
   if (!isLoggedIn) return (
     <div className="site admin-page">
-      <header className="nav"><a className="brand" href="/"><span>AOS</span><small>FURNITURE · SINCE 1989</small></a><a className="back-link" href="/">Back to website <span>↗</span></a></header>
+      <header className="nav"><a className="brand" href="/"><img src={defaultLogo} alt="AOS Furniture logo" /></a><a className="back-link" href="/">Back to website <span>↗</span></a></header>
       <main className="login-panel"><div className="login-copy"><p className="eyebrow">Private workspace</p><h1>Welcome<br /><em>back.</em></h1><p>Sign in to manage the images and brand assets shown on your website.</p></div><form className="login-form" onSubmit={login}><label>Email address<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@company.com" required /></label><label>Password<input type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Enter your password" required /></label>{error && <p className="form-error">{error}</p>}<button className="login-button" type="submit">Sign in <span>↗</span></button><p className="login-note">Admin credentials are configured with <code>VITE_ADMIN_EMAIL</code> and <code>VITE_ADMIN_PASSWORD</code>.</p></form></main>
-      <footer><a className="brand" href="/"><span>AOS</span><small>FURNITURE · SINCE 1989</small></a><span>© 2026 AOS Furniture</span></footer>
+      <footer><a className="brand" href="/"><img src={defaultLogo} alt="AOS Furniture logo" /></a><span>© 2026 AOS Furniture</span></footer>
     </div>
   )
 
@@ -92,7 +93,7 @@ function AdminPage({ logo, setLogo, gallery, setGallery, services, setServices, 
     <div className="site admin-mode">
       <header className="nav">
         <a className="brand" href="/" aria-label="AOS Furniture home">
-          {logo ? <img src={logo} alt="AOS Furniture logo" /> : <><span>AOS</span><small>FURNITURE · SINCE 1989</small></>}
+          <img src={logo || defaultLogo} alt="AOS Furniture logo" />
         </a>
         <div className="admin-nav"><a className="admin-site-link" href="/#shop">View shop</a><span>Signed in as admin</span><button className="admin-button" type="button" onClick={logout}>Log out</button></div>
       </header>
@@ -106,7 +107,7 @@ function AdminPage({ logo, setLogo, gallery, setGallery, services, setServices, 
             <section className="upload-card services-editor"><div><p className="eyebrow">Services page</p><h2>Service names</h2><p className="muted">Edit the name shown on each service section. Each one includes a Book now button to WhatsApp.</p></div><div className="service-name-grid">{services.map((service) => <label className="service-name-field" key={service.id}><span>{service.eyebrow}</span><input value={service.name} onChange={(event) => setServices((current) => current.map((item) => item.id === service.id ? { ...item, name: event.target.value } : item))} /></label>)}</div></section>
           </div>
       </main>
-      <footer><a className="brand" href="/"><span>AOS</span><small>FURNITURE</small></a><p>Content studio</p><span>© 2026 AOS Furniture</span></footer>
+      <footer><a className="brand" href="/"><img src={logo || defaultLogo} alt="AOS Furniture logo" /></a><p>Content studio</p><span>© 2026 AOS Furniture</span></footer>
     </div>
   )
 }
@@ -147,7 +148,7 @@ function PublicSite({ logo, gallery, services }) {
     <div className="site">
       <header className="nav">
         <a className="brand" href="#top" aria-label="AOS Furniture home">
-          {logo ? <img src={logo} alt="AOS Furniture logo" /> : <><span>AOS</span><small>FURNITURE · SINCE 1989</small></>}
+          <img src={logo || defaultLogo} alt="AOS Furniture logo" />
         </a>
         <button className="menu-toggle" type="button" aria-label="Toggle navigation menu" aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen((current) => !current)}><span /><span /><span /></button>
         <nav className={mobileMenuOpen ? 'links reference-links mobile-open' : 'links reference-links'} aria-label="Main navigation"><a className="active" href="#top" onClick={() => setMobileMenuOpen(false)}>Home</a><a href="#gallery" onClick={() => setMobileMenuOpen(false)}>Gallery</a><a href="#services" onClick={() => setMobileMenuOpen(false)}>Services</a><a href="#shop" onClick={() => setMobileMenuOpen(false)}>Shop</a><a href="#story" onClick={() => setMobileMenuOpen(false)}>About</a><a href={whatsappLink} target="_blank" rel="noreferrer" onClick={() => setMobileMenuOpen(false)}>Contact</a></nav>
@@ -162,7 +163,7 @@ function PublicSite({ logo, gallery, services }) {
           <section className="quote"><p>“The best rooms are<br /><em>felt</em> before they are seen.”</p><span>— AOS design notes</span></section>
           <section className="contact" id="contact"><div><p className="eyebrow">Let's talk</p><h2>Make room<br />for something <em>good.</em></h2></div><div className="contact-detail"><p>Have a question or want to start a project? Send us a message on WhatsApp and let’s talk about your space.</p><div className="contact-links"><a className="text-link" href={whatsappLink} target="_blank" rel="noreferrer">Chat with us on WhatsApp <span>↗</span></a><a className="instagram-link" href={instagramLink} target="_blank" rel="noreferrer" aria-label="Follow AOS Furniture on Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" /></svg><span>Instagram</span><b>↗</b></a></div></div><div className="location-grid"><article className="location-card"><p className="eyebrow">Head Office</p><div className="address"><p>184 Ipaja Rd<br />Idimu, Lagos 102213<br />Lagos, Nigeria</p><a className="map-link" href={mapsLink} target="_blank" rel="noreferrer">Open pin 01 <span>↗</span></a></div></article><article className="location-card"><p className="eyebrow">Branch</p><div className="address"><p>Imperial De-Vine Dews School<br />65 Agbado New Rd, Ifako-Ijaiye<br />Lagos 112105, Nigeria</p><a className="map-link" href={secondMapsLink} target="_blank" rel="noreferrer">Open pin 02 <span>↗</span></a></div></article><div className="map-frame combined-map"><LocationMap /><a className="combined-map-link" href={combinedMapsLink} target="_blank" rel="noreferrer">Open both locations in Google Maps <span>↗</span></a></div></div></section>
       </main>
-      <footer><a className="brand" href="#top"><span>AOS</span><small>FURNITURE · SINCE 1989</small></a><p>Made for the way you live.</p><span>© 2026 AOS Furniture · Since 1989</span></footer>
+      <footer><a className="brand" href="#top"><img src={logo || defaultLogo} alt="AOS Furniture logo" /></a><p>Made for the way you live.</p><span>© 2026 AOS Furniture · Since 1989</span></footer>
     </div>
   )
 }

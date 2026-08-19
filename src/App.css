@@ -4,7 +4,7 @@
 .nav > .brand { position: absolute; left: 5vw; }
 .brand { display: flex; flex-direction: column; line-height: .85; letter-spacing: .14em; font-family: Georgia, serif; font-size: 24px; }
 .brand small { font: 9px/1.2 'DM Sans', sans-serif; letter-spacing: .28em; margin-top: 7px; }
-.brand img { max-width: 116px; max-height: 44px; object-fit: contain; }
+.brand img { width: 58px; height: 58px; object-fit: contain; }
 .links { display: flex; gap: 34px; font-size: 12px; text-transform: uppercase; letter-spacing: .12em; }
 .reference-links { position: absolute; left: 50%; transform: translateX(-50%); display: flex; justify-content: center; gap: clamp(18px, 2.5vw, 42px); max-width: calc(100% - 220px); color: #fff; font-family: 'Montserrat', sans-serif; font-size: clamp(10px, 1vw, 14px); font-weight: 600; letter-spacing: clamp(.12em, .22vw, .25em); text-transform: uppercase; white-space: nowrap; }.reference-links a { color: #fff; padding: 7px 0 8px; }.reference-links a:hover, .reference-links .active { color: #fff; }
 .menu-toggle { display: none; }
