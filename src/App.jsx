@@ -53,8 +53,12 @@ function AdminPage({ logo, setLogo, gallery, setGallery, services, setServices, 
 
   const login = (event) => {
     event.preventDefault()
-    const validEmail = import.meta.env.VITE_ADMIN_EMAIL || 'admin@aosfurniture.com'
-    const validPassword = import.meta.env.VITE_ADMIN_PASSWORD || 'aosadmin'
+    const validEmail = import.meta.env.VITE_ADMIN_EMAIL
+    const validPassword = import.meta.env.VITE_ADMIN_PASSWORD
+    if (!validEmail || !validPassword) {
+      setError('Admin login is not configured for this deployment.')
+      return
+    }
     if (email === validEmail && password === validPassword) {
       sessionStorage.setItem('aos-admin-session', 'true')
       setIsLoggedIn(true)

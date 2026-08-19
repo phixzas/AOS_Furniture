@@ -4,6 +4,11 @@ services:
     runtime: static
     buildCommand: npm ci && npm run build
     staticPublishPath: ./dist
+    envVars:
+      - key: VITE_ADMIN_EMAIL
+        sync: false
+      - key: VITE_ADMIN_PASSWORD
+        sync: false
     routes:
       - type: rewrite
         source: /*
