@@ -1,4 +1,5 @@
 .site { --ink: #272621; --paper: #f5f2ec; --line: rgba(39,38,33,.2); background: var(--paper); min-height: 100vh; color: var(--ink); }
+.site main section[id] { scroll-margin-top: 88px; }
 .nav { position: sticky; top: 0; z-index: 20; height: 72px; display: flex; align-items: center; justify-content: center; padding: 0 5vw; border-bottom: 1px solid rgba(255,255,255,.12); background: #000; color: #fff; font-family: 'Montserrat', sans-serif; }
 .nav > .brand { position: absolute; left: 5vw; }
 .brand { display: flex; flex-direction: column; line-height: .85; letter-spacing: .14em; font-family: Georgia, serif; font-size: 24px; }

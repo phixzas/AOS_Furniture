@@ -30,6 +30,11 @@
   }
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 72px;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --text: #9ca3af;
