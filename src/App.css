@@ -1,12 +1,12 @@
 .site { --ink: #272621; --paper: #f5f2ec; --line: rgba(39,38,33,.2); background: var(--paper); min-height: 100vh; color: var(--ink); }
-.nav { height: 72px; display: flex; align-items: center; justify-content: space-between; padding: 0 5vw; border-bottom: 1px solid rgba(255,255,255,.12); background: #000; color: #fff; }
+.nav { position: sticky; top: 0; z-index: 20; height: 72px; display: flex; align-items: center; justify-content: space-between; padding: 0 5vw; border-bottom: 1px solid rgba(255,255,255,.12); background: #000; color: #fff; font-family: 'Montserrat', sans-serif; }
 .brand { display: flex; flex-direction: column; line-height: .85; letter-spacing: .14em; font-family: Georgia, serif; font-size: 24px; }
 .brand small { font: 9px/1.2 'DM Sans', sans-serif; letter-spacing: .28em; margin-top: 7px; }
 .brand img { max-width: 116px; max-height: 44px; object-fit: contain; }
 .links { display: flex; gap: 34px; font-size: 12px; text-transform: uppercase; letter-spacing: .12em; }
 .reference-links { position: absolute; left: 50%; transform: translateX(-50%); gap: 38px; color: #fff; font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: .25em; text-transform: uppercase; white-space: nowrap; }.reference-links a { color: #fff; padding: 7px 0 8px; }.reference-links a:hover, .reference-links .active { color: #fff; }.reference-links .active { border-bottom: 2px solid #fff; }
 .links a:hover, .text-link:hover { opacity: .55; }
-.admin-button { border: 1px solid rgba(255,255,255,.55); background: transparent; color: #fff; padding: 12px 17px; text-transform: uppercase; font-size: 10px; letter-spacing: .12em; cursor: pointer; }
+.admin-button { border: 1px solid rgba(255,255,255,.55); background: transparent; color: #fff; padding: 12px 17px; text-transform: uppercase; font-family: 'Montserrat', sans-serif; font-size: 10px; letter-spacing: .12em; cursor: pointer; }
 .admin-nav { display: flex; align-items: center; gap: 22px; font-size: 11px; color: #77746a; }.admin-nav .admin-button { color: var(--ink); }.back-link { text-transform: uppercase; letter-spacing: .13em; font-size: 10px; border-bottom: 1px solid var(--ink); padding-bottom: 7px; }.back-link span { font-size: 16px; margin-left: 10px; }
 .hero { min-height: calc(100vh - 72px); background-size: cover; background-position: center; color: #fff; position: relative; display: flex; align-items: center; padding: 10vw; }
 .hero-copy { max-width: 670px; animation: rise .8s ease both; }
