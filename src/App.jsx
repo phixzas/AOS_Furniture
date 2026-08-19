@@ -9,23 +9,32 @@ const defaultGallery = [
 ]
 
 const whatsappLink = 'https://wa.me/2348144293899'
+const defaultServices = [
+  { id: 'hotel', name: 'Hotel Furniture', eyebrow: '01 / Hospitality', copy: 'Thoughtful, durable pieces for guest rooms, lobbies, lounges, and dining spaces. We help hospitality teams create memorable environments that feel considered from the first arrival.' },
+  { id: 'home', name: 'Home Furniture', eyebrow: '02 / Residential', copy: 'From a single statement piece to a complete home, we create warm, comfortable furniture that reflects your lifestyle and makes everyday living feel more intentional.' },
+  { id: 'office', name: 'Office Furniture', eyebrow: '03 / Workspace', copy: 'Create a workspace that supports focus, collaboration, and wellbeing. Our office solutions combine practical performance with the character and comfort your team deserves.' },
+  { id: 'interior', name: 'Full Interior', eyebrow: '04 / Complete spaces', copy: 'Bring every part of your space together with a complete interior service. We coordinate the furniture, finishes, styling, and details to turn your vision into one beautifully finished environment.' },
+  { id: 'kitchen', name: 'Kitchen Furniture', eyebrow: '05 / Kitchen', copy: 'Beautiful, functional kitchen pieces made around the way you cook, gather, and live. We create solutions that make the heart of your home feel as good as it works.' },
+]
 
 function App() {
   const isAdminRoute = window.location.pathname === '/admin'
   const [logo, setLogo] = useState(() => localStorage.getItem('aos-logo') || '')
   const [gallery, setGallery] = useState(() => JSON.parse(localStorage.getItem('aos-gallery') || 'null') || defaultGallery)
+  const [services, setServices] = useState(() => JSON.parse(localStorage.getItem('aos-services') || 'null') || defaultServices)
   const logoInput = useRef(null)
   const galleryInput = useRef(null)
 
   useEffect(() => localStorage.setItem('aos-gallery', JSON.stringify(gallery)), [gallery])
   useEffect(() => { if (logo) localStorage.setItem('aos-logo', logo) }, [logo])
+  useEffect(() => localStorage.setItem('aos-services', JSON.stringify(services)), [services])
 
-  if (isAdminRoute) return <AdminPage logo={logo} setLogo={setLogo} gallery={gallery} setGallery={setGallery} logoInput={logoInput} galleryInput={galleryInput} />
+  if (isAdminRoute) return <AdminPage logo={logo} setLogo={setLogo} gallery={gallery} setGallery={setGallery} services={services} setServices={setServices} logoInput={logoInput} galleryInput={galleryInput} />
 
-  return <PublicSite logo={logo} gallery={gallery} />
+  return <PublicSite logo={logo} gallery={gallery} services={services} />
 }
 
-function AdminPage({ logo, setLogo, gallery, setGallery, logoInput, galleryInput }) {
+function AdminPage({ logo, setLogo, gallery, setGallery, services, setServices, logoInput, galleryInput }) {
   const [isLoggedIn, setIsLoggedIn] = useState(() => sessionStorage.getItem('aos-admin-session') === 'true')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -84,6 +93,7 @@ function AdminPage({ logo, setLogo, gallery, setGallery, logoInput, galleryInput
             <section className="upload-card"><div><p className="eyebrow">Brand identity</p><h2>Company logo</h2><p className="muted">PNG, JPG or SVG</p></div><input ref={logoInput} type="file" accept="image/*" onChange={(event) => readFiles(event.target.files, 'logo')} hidden /><button className="upload-button" onClick={() => logoInput.current?.click()}>Upload logo <span>+</span></button>{logo && <img className="logo-preview" src={logo} alt="Uploaded company logo" />}</section>
             <section className="upload-card"><div><p className="eyebrow">Visual library</p><h2>Gallery images</h2><p className="muted">These images appear in your public gallery without price tags.</p></div><input ref={galleryInput} type="file" accept="image/*" multiple onChange={(event) => readFiles(event.target.files, 'gallery')} hidden /><button className="upload-button" onClick={() => galleryInput.current?.click()}>Add images <span>+</span></button><div className="admin-gallery">{gallery.map((image) => <div className="admin-image" key={image.id}><img src={image.src} alt={image.alt} /><button onClick={() => setGallery((current) => current.filter((item) => item.id !== image.id))} aria-label={`Remove ${image.alt}`}>×</button></div>)}</div></section>
             <section className="upload-card pricing-card"><div><p className="eyebrow">Shop settings</p><h2>Price tags</h2><p className="muted">Add prices only to pieces you want to sell in the shop.</p></div><div className="price-editor-grid">{gallery.slice(1).map((image) => <label className="price-editor" key={`price-${image.id}`}><img src={image.src} alt={image.alt} /><span>{image.alt}</span><input value={image.price || ''} onChange={(event) => setGallery((current) => current.map((item) => item.id === image.id ? { ...item, price: event.target.value } : item))} placeholder="e.g. ₦450,000" /></label>)}</div></section>
+            <section className="upload-card services-editor"><div><p className="eyebrow">Services page</p><h2>Service names</h2><p className="muted">Edit the name shown on each service section. Each one includes a Book now button to WhatsApp.</p></div><div className="service-name-grid">{services.map((service) => <label className="service-name-field" key={service.id}><span>{service.eyebrow}</span><input value={service.name} onChange={(event) => setServices((current) => current.map((item) => item.id === service.id ? { ...item, name: event.target.value } : item))} /></label>)}</div></section>
           </div>
       </main>
       <footer><a className="brand" href="/"><span>AOS</span><small>FURNITURE</small></a><p>Content studio</p><span>© 2026 AOS Furniture</span></footer>
@@ -91,7 +101,7 @@ function AdminPage({ logo, setLogo, gallery, setGallery, logoInput, galleryInput
   )
 }
 
-function PublicSite({ logo, gallery }) {
+function PublicSite({ logo, gallery, services }) {
   const [showServices, setShowServices] = useState(false)
 
   return (
@@ -105,7 +115,7 @@ function PublicSite({ logo, gallery }) {
       <main id="top">
           <section className="hero" style={{ backgroundImage: `linear-gradient(90deg, rgba(24, 24, 20, .72), rgba(24, 24, 20, .08)), url(${gallery[0]?.src || defaultGallery[0].src})` }}><div className="hero-copy"><p className="eyebrow light">Furniture for living beautifully</p><h1>Rooms that feel<br /><em>like you.</em></h1><p className="hero-text">Thoughtful pieces, honest materials, and a softer way to live. Designed in small batches for the places you call home.</p><a className="circle-link" href="#collection">Explore collection <span>↘</span></a></div><div className="hero-note">EST. 2012 <i /> DESIGNED FOR SLOW LIVING</div></section>
           <section className="intro-band" id="story"><p className="eyebrow">The AOS approach</p><h2>Furniture with a point of view.<br /><span>Made to become part of your story.</span></h2><p>We believe a well-made room changes the way a day feels. Our collection balances warm tactility with quiet, considered forms that let life take center stage.</p></section>
-          <section className={`services-intro${showServices ? ' services-expanded' : ''}`} id="services"><div><p className="eyebrow">Our services</p><h2>Complete living<br /><em>experiences.</em></h2></div><div className="services-copy"><p>At <strong>AOS Furniture</strong>, we don’t just sell furniture — we create complete living experiences. From the moment you share your vision to the day your new pieces are perfectly placed in your home, our dedicated team is with you every step of the way.</p><p>Whether you’re furnishing a single room, outfitting an entire home, or looking for custom solutions tailored to your space and lifestyle, we offer thoughtful design guidance, seamless delivery, professional assembly, and ongoing support. Every service is designed to make your journey effortless, enjoyable, and truly rewarding.</p><p>Discover how AOS Furniture turns inspiration into beautifully finished spaces.</p><button className="services-toggle" type="button" onClick={() => setShowServices((current) => !current)} aria-expanded={showServices}>{showServices ? 'Show less' : 'View more'} <span>{showServices ? '↖' : '↘'}</span></button></div>{showServices && <div className="services-detail"><article><p className="eyebrow">01 / Hospitality</p><h3>Hotel<br /><em>Furniture.</em></h3><p>Thoughtful, durable pieces for guest rooms, lobbies, lounges, and dining spaces. We help hospitality teams create memorable environments that feel considered from the first arrival.</p><a href={whatsappLink} target="_blank" rel="noreferrer">Discuss your project ↗</a></article></div>}</section>
+          <section className={`services-intro${showServices ? ' services-expanded' : ''}`} id="services"><div><p className="eyebrow">Our services</p><h2>Complete living<br /><em>experiences.</em></h2></div><div className="services-copy"><p>At <strong>AOS Furniture</strong>, we don’t just sell furniture — we create complete living experiences. From the moment you share your vision to the day your new pieces are perfectly placed in your home, our dedicated team is with you every step of the way.</p><p>Whether you’re furnishing a single room, outfitting an entire home, or looking for custom solutions tailored to your space and lifestyle, we offer thoughtful design guidance, seamless delivery, professional assembly, and ongoing support. Every service is designed to make your journey effortless, enjoyable, and truly rewarding.</p><p>Discover how AOS Furniture turns inspiration into beautifully finished spaces.</p><button className="services-toggle" type="button" onClick={() => setShowServices((current) => !current)} aria-expanded={showServices}>{showServices ? 'Show less' : 'View more'} <span>{showServices ? '↖' : '↘'}</span></button></div>{showServices && <div className="services-detail">{services.map((service) => <article key={service.id}><p className="eyebrow">{service.eyebrow}</p><h3>{service.name}</h3><p>{service.copy}</p><a href={whatsappLink} target="_blank" rel="noreferrer">Book now ↗</a></article>)}</div>}</section>
           <section className="collection" id="collection"><div className="section-heading"><div><p className="eyebrow">The collection</p><h2>Objects of <em>comfort.</em></h2></div><a href="#shop">View all pieces <span>↗</span></a></div><div className="gallery-grid">{gallery.slice(1).map((image, index) => <article className={`gallery-item item-${index + 1}`} key={image.id}><img src={image.src} alt={image.alt} /><div className="image-caption"><span>{['Lounge / 01', 'Dining / 02', 'Accent / 03'][index] || 'Living / 04'}</span><span>↗</span></div></article>)}</div></section>
           <section className="gallery-section" id="gallery"><div className="section-heading"><div><p className="eyebrow">The gallery</p><h2>Spaces with <em>soul.</em></h2></div><p className="shop-note">A closer look at the details, textures,<br />and rooms behind the AOS collection.</p></div><div className="gallery-wall">{gallery.map((image, index) => <figure className={`gallery-wall-item gallery-wall-${index + 1}`} key={`gallery-${image.id}`}><img src={image.src} alt={image.alt} /><figcaption>{String(index + 1).padStart(2, '0')} / AOS FURNITURE</figcaption></figure>)}</div></section>
           <section className="shop-section" id="shop"><div className="section-heading"><div><p className="eyebrow">Shop the collection</p><h2>Pieces to <em>keep.</em></h2></div><p className="shop-note">Every piece is available by request.<br />Message us on WhatsApp to order.</p></div><div className="shop-grid">{gallery.slice(1).map((image, index) => <article className="shop-card" key={`shop-${image.id}`}><div className="shop-image"><img src={image.src} alt={image.alt} />{image.price && <span className="price-tag">{image.price}</span>}</div><div className="shop-card-info"><span>{image.alt}</span><a href={whatsappLink} target="_blank" rel="noreferrer">Ask about this piece ↗</a></div></article>)}</div></section>
