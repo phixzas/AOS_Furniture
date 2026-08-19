@@ -41,6 +41,7 @@ const createServiceId = () => `service-${Date.now()}-${Math.random().toString(36
 
 function App() {
   const isAdminRoute = window.location.pathname === '/admin'
+  const isGalleryRoute = window.location.pathname === '/gallery'
   const [logo, setLogo] = useState(() => localStorage.getItem('aos-logo') || '')
   const [gallery, setGallery] = useState(() => readStoredJson('aos-gallery', defaultGallery))
   const [products, setProducts] = useState(() => readStoredJson('aos-products', readStoredJson('aos-gallery', defaultGallery).slice(1)))
@@ -55,6 +56,7 @@ function App() {
   useEffect(() => localStorage.setItem('aos-services', JSON.stringify(services)), [services])
 
   if (isAdminRoute) return <AdminPage logo={logo} setLogo={setLogo} gallery={gallery} setGallery={setGallery} products={products} setProducts={setProducts} services={services} setServices={setServices} logoInput={logoInput} visualGalleryInput={visualGalleryInput} galleryInput={galleryInput} />
+  if (isGalleryRoute) return <GalleryPage logo={logo} gallery={gallery} />
 
   return <PublicSite logo={logo} gallery={gallery} products={products} services={services} />
 }
@@ -152,6 +154,18 @@ function ServiceBooking({ service }) {
   )
 }
 
+function GalleryPage({ logo, gallery }) {
+  return (
+    <div className="site gallery-page">
+      <header className="nav"><a className="brand" href="/"><img src={logo || defaultLogo} alt="AOS Furniture logo" /></a><a className="back-link" href="/">Back to website <span>↗</span></a></header>
+      <main>
+        <section className="gallery-section" id="gallery"><div className="section-heading"><div><p className="eyebrow">The gallery</p><h1>Spaces with <em>soul.</em></h1></div><p className="shop-note">A closer look at the details, textures,<br />and rooms behind the AOS collection.</p></div><div className="gallery-wall">{gallery.map((image, index) => <figure className={`gallery-wall-item gallery-wall-${index + 1}`} key={`gallery-page-${image.id}`}><img src={image.src} alt={image.alt} /><figcaption>{String(index + 1).padStart(2, '0')} / AOS FURNITURE</figcaption></figure>)}</div></section>
+      </main>
+      <footer><a className="brand" href="/"><img src={logo || defaultLogo} alt="AOS Furniture logo" /></a><span>© 2026 AOS Furniture</span></footer>
+    </div>
+  )
+}
+
 function LocationMap() {
   return <MapContainer className="leaflet-map" center={[6.65, 3.3]} zoom={11} scrollWheelZoom={false}>
     <TileLayer attribution='&copy; OpenStreetMap contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
@@ -175,7 +189,7 @@ function PublicSite({ logo, gallery, products, services }) {
       </header>
       <main id="top">
           <section className="hero" style={{ backgroundImage: `linear-gradient(90deg, rgba(24, 24, 20, .72), rgba(24, 24, 20, .08)), url(${gallery[0]?.src || defaultGallery[0].src})` }}><div className="hero-copy"><p className="eyebrow light">Furniture for living beautifully</p><h1>Rooms that feel<br /><em>like you.</em></h1><p className="hero-text">Thoughtful pieces, honest materials, and a softer way to live. Designed in small batches for the places you call home.</p><a className="circle-link" href="#collection">Explore collection <span>↘</span></a></div><div className="hero-note">SINCE 1989 <i /> MADE FOR EVERYDAY LIVING</div></section>
-          <section className="gallery-section" id="gallery"><div className="section-heading"><div><p className="eyebrow">The gallery</p><h2>Spaces with <em>soul.</em></h2></div><p className="shop-note">A closer look at the details, textures,<br />and rooms behind the AOS collection.</p></div><div className="gallery-wall">{gallery.map((image, index) => <figure className={`gallery-wall-item gallery-wall-${index + 1}`} key={`gallery-${image.id}`}><img src={image.src} alt={image.alt} /><figcaption>{String(index + 1).padStart(2, '0')} / AOS FURNITURE</figcaption></figure>)}</div></section>
+          <section className="gallery-section" id="gallery"><div className="section-heading"><div><p className="eyebrow">The gallery</p><h2>Spaces with <em>soul.</em></h2></div><div><p className="shop-note">A closer look at the details, textures,<br />and rooms behind the AOS collection.</p><a className="gallery-more-link" href="/gallery">View more <span>↗</span></a></div></div><div className="gallery-wall">{gallery.map((image, index) => <figure className={`gallery-wall-item gallery-wall-${index + 1}`} key={`gallery-${image.id}`}><img src={image.src} alt={image.alt} /><figcaption>{String(index + 1).padStart(2, '0')} / AOS FURNITURE</figcaption></figure>)}</div></section>
           <section className={`services-intro${showServices ? ' services-expanded' : ''}`} id="services" style={{ backgroundImage: `linear-gradient(90deg, rgba(24, 24, 20, .94), rgba(24, 24, 20, .68)), url(${servicesBackground})` }}><div><p className="eyebrow">Our services</p><h2>Complete living<br /><em>experiences.</em></h2></div><div className="services-copy"><p>At <strong>AOS Furniture</strong>, we don’t just sell furniture — we create complete living experiences. From the moment you share your vision to the day your new pieces are perfectly placed in your home, our dedicated team is with you every step of the way.</p><p>Whether you’re furnishing a single room, outfitting an entire home, or looking for custom solutions tailored to your space and lifestyle, we offer thoughtful design guidance, seamless delivery, professional assembly, and ongoing support. Every service is designed to make your journey effortless, enjoyable, and truly rewarding.</p><p>Discover how AOS Furniture turns inspiration into beautifully finished spaces.</p><button className="services-toggle" type="button" onClick={() => setShowServices((current) => !current)} aria-expanded={showServices}>{showServices ? 'Show less' : 'View more'} <span>{showServices ? '↖' : '↘'}</span></button></div>{showServices && <div className="services-detail">{services.map((service) => <article key={service.id}><p className="eyebrow">{service.eyebrow}</p><h3>{service.name}</h3><p>{service.copy}</p><ServiceBooking service={service} /></article>)}</div>}</section>
           <section className="collection" id="collection"><div className="section-heading"><div><p className="eyebrow">The collection</p><h2>Objects of <em>comfort.</em></h2></div><a href="#shop">View all pieces <span>↗</span></a></div><div className="gallery-grid">{products.map((image, index) => <article className={`gallery-item item-${index + 1}`} key={image.id}><img src={image.src} alt={image.alt} /><div className="image-caption"><span>{['Lounge / 01', 'Dining / 02', 'Accent / 03'][index] || 'Living / 04'}</span><span>↗</span></div></article>)}</div></section>
           <section className="shop-section" id="shop"><div className="section-heading"><div><p className="eyebrow">Shop the collection</p><h2>Pieces to <em>keep.</em></h2></div><p className="shop-note">Every piece is available by request.<br />Message us on WhatsApp to order.</p></div><div className="shop-grid">{products.map((image, index) => <article className="shop-card" key={`shop-${image.id}`}><div className="shop-image"><img src={image.src} alt={image.alt} />{image.price && <span className="price-tag">{image.price}</span>}</div><div className="shop-card-info"><span>{image.alt}</span><a href={whatsappLink} target="_blank" rel="noreferrer">Ask about this piece ↗</a></div></article>)}</div></section>
