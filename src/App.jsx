@@ -90,7 +90,6 @@ function PublicSite({ logo, gallery }) {
           {logo ? <img src={logo} alt="AOS Furniture logo" /> : <><span>AOS</span><small>FURNITURE</small></>}
         </a>
         <nav className="links reference-links" aria-label="Main navigation"><a className="active" href="#top">Home</a><a href="#story">About</a><a href="#collection">Services</a><a href="#collection">Gallery</a><a href="#story">Masterclass</a><a href="#collection">Shop</a><a href="#contact">Contact</a></nav>
-        <a className="admin-button" href="/admin">Admin login</a>
       </header>
       <main id="top">
           <section className="hero" style={{ backgroundImage: `linear-gradient(90deg, rgba(24, 24, 20, .72), rgba(24, 24, 20, .08)), url(${gallery[0]?.src || defaultGallery[0].src})` }}><div className="hero-copy"><p className="eyebrow light">Furniture for living beautifully</p><h1>Rooms that feel<br /><em>like you.</em></h1><p className="hero-text">Thoughtful pieces, honest materials, and a softer way to live. Designed in small batches for the places you call home.</p><a className="circle-link" href="#collection">Explore collection <span>↘</span></a></div><div className="hero-note">EST. 2012 <i /> DESIGNED FOR SLOW LIVING</div></section>
