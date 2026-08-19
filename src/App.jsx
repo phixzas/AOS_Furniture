@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import servicesBackground from '../modern-sofa-1024x602.jpg'
+import 'leaflet/dist/leaflet.css'
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
 
 const defaultGallery = [
   { id: 'hero', src: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1800&q=85', alt: 'Warm contemporary living room', price: '' },
@@ -129,6 +131,14 @@ function ServiceBooking({ service }) {
   )
 }
 
+function LocationMap() {
+  return <MapContainer className="leaflet-map" center={[6.65, 3.3]} zoom={11} scrollWheelZoom={false}>
+    <TileLayer attribution='&copy; OpenStreetMap contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+    <Marker position={[6.615, 3.296]}><Popup><strong>Head Office</strong><br />184 Ipaja Rd, Idimu, Lagos<br /><a href={mapsLink} target="_blank" rel="noreferrer">Open exact pin</a></Popup></Marker>
+    <Marker position={[6.6827326, 3.2995484]}><Popup><strong>Branch</strong><br />65 Agbado New Rd, Ifako-Ijaiye<br /><a href={secondMapsLink} target="_blank" rel="noreferrer">Open exact pin</a></Popup></Marker>
+  </MapContainer>
+}
+
 function PublicSite({ logo, gallery, services }) {
   const [showServices, setShowServices] = useState(false)
 
@@ -148,7 +158,7 @@ function PublicSite({ logo, gallery, services }) {
           <section className="gallery-section" id="gallery"><div className="section-heading"><div><p className="eyebrow">The gallery</p><h2>Spaces with <em>soul.</em></h2></div><p className="shop-note">A closer look at the details, textures,<br />and rooms behind the AOS collection.</p></div><div className="gallery-wall">{gallery.map((image, index) => <figure className={`gallery-wall-item gallery-wall-${index + 1}`} key={`gallery-${image.id}`}><img src={image.src} alt={image.alt} /><figcaption>{String(index + 1).padStart(2, '0')} / AOS FURNITURE</figcaption></figure>)}</div></section>
           <section className="shop-section" id="shop"><div className="section-heading"><div><p className="eyebrow">Shop the collection</p><h2>Pieces to <em>keep.</em></h2></div><p className="shop-note">Every piece is available by request.<br />Message us on WhatsApp to order.</p></div><div className="shop-grid">{gallery.slice(1).map((image, index) => <article className="shop-card" key={`shop-${image.id}`}><div className="shop-image"><img src={image.src} alt={image.alt} />{image.price && <span className="price-tag">{image.price}</span>}</div><div className="shop-card-info"><span>{image.alt}</span><a href={whatsappLink} target="_blank" rel="noreferrer">Ask about this piece ↗</a></div></article>)}</div></section>
           <section className="quote"><p>“The best rooms are<br /><em>felt</em> before they are seen.”</p><span>— AOS design notes</span></section>
-          <section className="contact" id="contact"><div><p className="eyebrow">Let's talk</p><h2>Make room<br />for something <em>good.</em></h2></div><div className="contact-detail"><p>Have a question or want to start a project? Send us a message on WhatsApp and let’s talk about your space.</p><div className="contact-links"><a className="text-link" href={whatsappLink} target="_blank" rel="noreferrer">Chat with us on WhatsApp <span>↗</span></a><a className="instagram-link" href={instagramLink} target="_blank" rel="noreferrer" aria-label="Follow AOS Furniture on Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" /></svg><span>Instagram</span><b>↗</b></a></div></div><div className="location-grid"><article className="location-card"><p className="eyebrow">Head Office</p><div className="address"><p>184 Ipaja Rd<br />Idimu, Lagos 102213<br />Lagos, Nigeria</p><a className="map-link" href={mapsLink} target="_blank" rel="noreferrer">Open pin 01 <span>↗</span></a></div></article><article className="location-card"><p className="eyebrow">Branch</p><div className="address"><p>Imperial De-Vine Dews School<br />65 Agbado New Rd, Ifako-Ijaiye<br />Lagos 112105, Nigeria</p><a className="map-link" href={secondMapsLink} target="_blank" rel="noreferrer">Open pin 02 <span>↗</span></a></div></article><div className="map-frame combined-map"><iframe title="AOS Furniture two location map" src={combinedMapsEmbed} loading="lazy" referrerPolicy="no-referrer-when-downgrade" /><a className="combined-map-link" href={combinedMapsLink} target="_blank" rel="noreferrer">Open both locations in Google Maps <span>↗</span></a></div></div></section>
+          <section className="contact" id="contact"><div><p className="eyebrow">Let's talk</p><h2>Make room<br />for something <em>good.</em></h2></div><div className="contact-detail"><p>Have a question or want to start a project? Send us a message on WhatsApp and let’s talk about your space.</p><div className="contact-links"><a className="text-link" href={whatsappLink} target="_blank" rel="noreferrer">Chat with us on WhatsApp <span>↗</span></a><a className="instagram-link" href={instagramLink} target="_blank" rel="noreferrer" aria-label="Follow AOS Furniture on Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" /></svg><span>Instagram</span><b>↗</b></a></div></div><div className="location-grid"><article className="location-card"><p className="eyebrow">Head Office</p><div className="address"><p>184 Ipaja Rd<br />Idimu, Lagos 102213<br />Lagos, Nigeria</p><a className="map-link" href={mapsLink} target="_blank" rel="noreferrer">Open pin 01 <span>↗</span></a></div></article><article className="location-card"><p className="eyebrow">Branch</p><div className="address"><p>Imperial De-Vine Dews School<br />65 Agbado New Rd, Ifako-Ijaiye<br />Lagos 112105, Nigeria</p><a className="map-link" href={secondMapsLink} target="_blank" rel="noreferrer">Open pin 02 <span>↗</span></a></div></article><div className="map-frame combined-map"><LocationMap /><a className="combined-map-link" href={combinedMapsLink} target="_blank" rel="noreferrer">Open both locations in Google Maps <span>↗</span></a></div></div></section>
       </main>
       <footer><a className="brand" href="#top"><span>AOS</span><small>FURNITURE · SINCE 1989</small></a><p>Made for the way you live.</p><span>© 2026 AOS Furniture · Since 1989</span></footer>
     </div>
