@@ -28,11 +28,21 @@ const defaultServices = [
   { id: 'kitchen', name: 'Kitchen Furniture', eyebrow: '05 / Kitchen', copy: 'Beautiful, functional kitchen pieces made around the way you cook, gather, and live. We create solutions that make the heart of your home feel as good as it works.' },
 ]
 
+const readStoredJson = (key, fallback) => {
+  try {
+    return JSON.parse(localStorage.getItem(key) || 'null') || fallback
+  } catch {
+    return fallback
+  }
+}
+
+const createImageId = (fileName) => `${Date.now()}-${Math.random().toString(36).slice(2)}-${fileName}`
+
 function App() {
   const isAdminRoute = window.location.pathname === '/admin'
   const [logo, setLogo] = useState(() => localStorage.getItem('aos-logo') || '')
-  const [gallery, setGallery] = useState(() => JSON.parse(localStorage.getItem('aos-gallery') || 'null') || defaultGallery)
-  const [services, setServices] = useState(() => JSON.parse(localStorage.getItem('aos-services') || 'null') || defaultServices)
+  const [gallery, setGallery] = useState(() => readStoredJson('aos-gallery', defaultGallery))
+  const [services, setServices] = useState(() => readStoredJson('aos-services', defaultServices))
   const logoInput = useRef(null)
   const galleryInput = useRef(null)
 
@@ -79,7 +89,7 @@ function AdminPage({ logo, setLogo, gallery, setGallery, services, setServices, 
       const reader = new FileReader()
       reader.onload = () => {
         if (kind === 'logo') setLogo(reader.result)
-        else setGallery((current) => [...current, { id: `${Date.now()}-${file.name}`, src: reader.result, alt: file.name, price: '' }])
+        else setGallery((current) => [...current, { id: createImageId(file.name), src: reader.result, alt: file.name, price: '' }])
       }
       reader.readAsDataURL(file)
     })
@@ -106,8 +116,8 @@ function AdminPage({ logo, setLogo, gallery, setGallery, services, setServices, 
           <div className="admin-intro"><p className="eyebrow">Content studio</p><h1>Make the room yours.</h1><p>Upload your brand mark and the images that tell your story. Save when you are ready to publish them on the website.</p></div>
           <div className="upload-grid">
             <section className="upload-card"><div><p className="eyebrow">Brand identity</p><h2>Company logo</h2><p className="muted">PNG, JPG or SVG</p></div><input ref={logoInput} type="file" accept="image/*" onChange={(event) => readFiles(event.target.files, 'logo')} hidden /><button className="upload-button" onClick={() => logoInput.current?.click()}>Upload logo <span>+</span></button>{logo && <img className="logo-preview" src={logo} alt="Uploaded company logo" />}</section>
-            <section className="upload-card"><div><p className="eyebrow">Visual library</p><h2>Gallery images</h2><p className="muted">These images appear in your public gallery without price tags.</p></div><input ref={galleryInput} type="file" accept="image/*" multiple onChange={(event) => readFiles(event.target.files, 'gallery')} hidden /><button className="upload-button" onClick={() => galleryInput.current?.click()}>Add images <span>+</span></button><div className="admin-gallery">{gallery.map((image) => <div className="admin-image" key={image.id}><img src={image.src} alt={image.alt} /><button onClick={() => setGallery((current) => current.filter((item) => item.id !== image.id))} aria-label={`Remove ${image.alt}`}>×</button></div>)}</div></section>
-            <section className="upload-card pricing-card"><div><p className="eyebrow">Shop settings</p><h2>Price tags</h2><p className="muted">Add prices only to pieces you want to sell in the shop.</p></div><div className="price-editor-grid">{gallery.slice(1).map((image) => <label className="price-editor" key={`price-${image.id}`}><img src={image.src} alt={image.alt} /><span>{image.alt}</span><input value={image.price || ''} onChange={(event) => setGallery((current) => current.map((item) => item.id === image.id ? { ...item, price: event.target.value } : item))} placeholder="e.g. ₦450,000" /></label>)}</div></section>
+            <section className="upload-card"><div><p className="eyebrow">Visual library</p><h2>Gallery images</h2><p className="muted">These images appear in your public gallery. Product prices are managed in Shop settings below.</p></div><div className="admin-gallery">{gallery.map((image) => <div className="admin-image" key={image.id}><img src={image.src} alt={image.alt} /><button onClick={() => setGallery((current) => current.filter((item) => item.id !== image.id))} aria-label={`Remove ${image.alt}`}>×</button></div>)}</div></section>
+            <section className="upload-card pricing-card"><div><p className="eyebrow">Shop settings</p><h2>Products &amp; prices</h2><p className="muted">Upload as many product photos as you need. Add a price to show it on the home page shop section.</p></div><input ref={galleryInput} type="file" accept="image/*" multiple onChange={(event) => { readFiles(event.target.files, 'gallery'); event.target.value = '' }} hidden /><button className="upload-button" type="button" onClick={() => galleryInput.current?.click()}>Upload product photos <span>+</span></button><div className="price-editor-grid">{gallery.slice(1).map((image) => <label className="price-editor" key={`price-${image.id}`}><img src={image.src} alt={image.alt} /><span>{image.alt}</span><input value={image.price || ''} onChange={(event) => setGallery((current) => current.map((item) => item.id === image.id ? { ...item, price: event.target.value } : item))} placeholder="e.g. ₦450,000" /></label>)}</div></section>
             <section className="upload-card services-editor"><div><p className="eyebrow">Services page</p><h2>Service names</h2><p className="muted">Edit the name shown on each service section. Each one includes a Book now button to WhatsApp.</p></div><div className="service-name-grid">{services.map((service) => <label className="service-name-field" key={service.id}><span>{service.eyebrow}</span><input value={service.name} onChange={(event) => setServices((current) => current.map((item) => item.id === service.id ? { ...item, name: event.target.value } : item))} /></label>)}</div></section>
           </div>
       </main>
