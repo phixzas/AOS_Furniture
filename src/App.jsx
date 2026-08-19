@@ -16,7 +16,7 @@ const mapsEmbed = 'https://www.google.com/maps?q=184+Ipaja+Rd,+Idimu,+Lagos+1022
 const secondMapsLink = 'https://maps.app.goo.gl/M739YETfevVQ22zC6'
 const secondMapsEmbed = 'https://www.google.com/maps?q=Imperial+De-Vine+Dews+School,+65+Agbado+New+Rd,+Ifako-Ijaiye,+Lagos+112105&output=embed'
 const combinedMapsLink = 'https://www.google.com/maps/dir/?api=1&origin=184+Ipaja+Rd,+Idimu,+Lagos+102213,+Lagos&destination=Imperial+De-Vine+Dews+School,+65+Agbado+New+Rd,+Ifako-Ijaiye,+Lagos+112105'
-const combinedMapsEmbed = 'https://www.google.com/maps/dir/184+Ipaja+Rd,+Idimu,+Lagos+102213,+Lagos/Imperial+De-Vine+Dews+School,+65+Agbado+New+Rd,+Ifako-Ijaiye,+Lagos+112105'
+const combinedMapsEmbed = mapsEmbed
 const defaultServices = [
   { id: 'hotel', name: 'Hotel Furniture', eyebrow: '01 / Hospitality', copy: 'Thoughtful, durable pieces for guest rooms, lobbies, lounges, and dining spaces. We help hospitality teams create memorable environments that feel considered from the first arrival.' },
   { id: 'home', name: 'Home Furniture', eyebrow: '02 / Residential', copy: 'From a single statement piece to a complete home, we create warm, comfortable furniture that reflects your lifestyle and makes everyday living feel more intentional.' },
