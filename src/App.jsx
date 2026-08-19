@@ -141,6 +141,7 @@ function LocationMap() {
 
 function PublicSite({ logo, gallery, services }) {
   const [showServices, setShowServices] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
     <div className="site">
@@ -148,7 +149,8 @@ function PublicSite({ logo, gallery, services }) {
         <a className="brand" href="#top" aria-label="AOS Furniture home">
           {logo ? <img src={logo} alt="AOS Furniture logo" /> : <><span>AOS</span><small>FURNITURE · SINCE 1989</small></>}
         </a>
-        <nav className="links reference-links" aria-label="Main navigation"><a className="active" href="#top">Home</a><a href="#story">About</a><a href="#services">Services</a><a href="#gallery">Gallery</a><a href="#shop">Shop</a><a href={whatsappLink} target="_blank" rel="noreferrer">Contact</a></nav>
+        <button className="menu-toggle" type="button" aria-label="Toggle navigation menu" aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen((current) => !current)}><span /><span /><span /></button>
+        <nav className={mobileMenuOpen ? 'links reference-links mobile-open' : 'links reference-links'} aria-label="Main navigation"><a className="active" href="#top" onClick={() => setMobileMenuOpen(false)}>Home</a><a href="#story" onClick={() => setMobileMenuOpen(false)}>About</a><a href="#services" onClick={() => setMobileMenuOpen(false)}>Services</a><a href="#gallery" onClick={() => setMobileMenuOpen(false)}>Gallery</a><a href="#shop" onClick={() => setMobileMenuOpen(false)}>Shop</a><a href={whatsappLink} target="_blank" rel="noreferrer" onClick={() => setMobileMenuOpen(false)}>Contact</a></nav>
       </header>
       <main id="top">
           <section className="hero" style={{ backgroundImage: `linear-gradient(90deg, rgba(24, 24, 20, .72), rgba(24, 24, 20, .08)), url(${gallery[0]?.src || defaultGallery[0].src})` }}><div className="hero-copy"><p className="eyebrow light">Furniture for living beautifully</p><h1>Rooms that feel<br /><em>like you.</em></h1><p className="hero-text">Thoughtful pieces, honest materials, and a softer way to live. Designed in small batches for the places you call home.</p><a className="circle-link" href="#collection">Explore collection <span>↘</span></a></div><div className="hero-note">SINCE 1989 <i /> DESIGNED FOR SLOW LIVING</div></section>
