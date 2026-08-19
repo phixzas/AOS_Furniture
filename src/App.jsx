@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import './App.css'
 
 const defaultGallery = [
-  { id: 'hero', src: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1800&q=85', alt: 'Warm contemporary living room' },
-  { id: 'chair', src: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1000&q=85', alt: 'Cream lounge sofa' },
-  { id: 'dining', src: 'https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&w=1000&q=85', alt: 'Refined dining space' },
-  { id: 'detail', src: 'https://images.unsplash.com/photo-1617104678098-de229db51175?auto=format&fit=crop&w=1000&q=85', alt: 'Textured designer chair' },
+  { id: 'hero', src: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1800&q=85', alt: 'Warm contemporary living room', price: '' },
+  { id: 'chair', src: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1000&q=85', alt: 'Cream lounge sofa', price: '₦850,000' },
+  { id: 'dining', src: 'https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&w=1000&q=85', alt: 'Refined dining space', price: '₦620,000' },
+  { id: 'detail', src: 'https://images.unsplash.com/photo-1617104678098-de229db51175?auto=format&fit=crop&w=1000&q=85', alt: 'Textured designer chair', price: '₦280,000' },
 ]
 
 const whatsappLink = 'https://wa.me/2348144293899'
@@ -55,7 +55,7 @@ function AdminPage({ logo, setLogo, gallery, setGallery, logoInput, galleryInput
       const reader = new FileReader()
       reader.onload = () => {
         if (kind === 'logo') setLogo(reader.result)
-        else setGallery((current) => [...current, { id: `${Date.now()}-${file.name}`, src: reader.result, alt: file.name }])
+        else setGallery((current) => [...current, { id: `${Date.now()}-${file.name}`, src: reader.result, alt: file.name, price: '' }])
       }
       reader.readAsDataURL(file)
     })
@@ -75,14 +75,14 @@ function AdminPage({ logo, setLogo, gallery, setGallery, logoInput, galleryInput
         <a className="brand" href="/" aria-label="AOS Furniture home">
           {logo ? <img src={logo} alt="AOS Furniture logo" /> : <><span>AOS</span><small>FURNITURE</small></>}
         </a>
-        <div className="admin-nav"><span>Signed in as admin</span><button className="admin-button" type="button" onClick={logout}>Log out</button></div>
+        <div className="admin-nav"><a className="admin-site-link" href="/#shop">View shop</a><span>Signed in as admin</span><button className="admin-button" type="button" onClick={logout}>Log out</button></div>
       </header>
       <div className="admin-toolbar"><span>Admin content studio</span><button className="save-site-button" type="button" onClick={saveAndViewSite}>Save &amp; view site <span>↗</span></button></div>
       <main className="admin-panel">
           <div className="admin-intro"><p className="eyebrow">Content studio</p><h1>Make the room yours.</h1><p>Upload your brand mark and the images that tell your story. Save when you are ready to publish them on the website.</p></div>
           <div className="upload-grid">
             <section className="upload-card"><div><p className="eyebrow">Brand identity</p><h2>Company logo</h2><p className="muted">PNG, JPG or SVG</p></div><input ref={logoInput} type="file" accept="image/*" onChange={(event) => readFiles(event.target.files, 'logo')} hidden /><button className="upload-button" onClick={() => logoInput.current?.click()}>Upload logo <span>+</span></button>{logo && <img className="logo-preview" src={logo} alt="Uploaded company logo" />}</section>
-            <section className="upload-card"><div><p className="eyebrow">Visual library</p><h2>Gallery images</h2><p className="muted">Add as many as you like</p></div><input ref={galleryInput} type="file" accept="image/*" multiple onChange={(event) => readFiles(event.target.files, 'gallery')} hidden /><button className="upload-button" onClick={() => galleryInput.current?.click()}>Add images <span>+</span></button><div className="admin-gallery">{gallery.map((image) => <div className="admin-image" key={image.id}><img src={image.src} alt={image.alt} /><button onClick={() => setGallery((current) => current.filter((item) => item.id !== image.id))} aria-label={`Remove ${image.alt}`}>×</button></div>)}</div></section>
+            <section className="upload-card"><div><p className="eyebrow">Visual library &amp; shop</p><h2>Gallery images</h2><p className="muted">Add images, then give each piece a price tag.</p></div><input ref={galleryInput} type="file" accept="image/*" multiple onChange={(event) => readFiles(event.target.files, 'gallery')} hidden /><button className="upload-button" onClick={() => galleryInput.current?.click()}>Add images <span>+</span></button><div className="admin-gallery">{gallery.map((image) => <div className="admin-image" key={image.id}><img src={image.src} alt={image.alt} /><button onClick={() => setGallery((current) => current.filter((item) => item.id !== image.id))} aria-label={`Remove ${image.alt}`}>×</button><label className="price-field">Price tag<input value={image.price || ''} onChange={(event) => setGallery((current) => current.map((item) => item.id === image.id ? { ...item, price: event.target.value } : item))} placeholder="e.g. ₦450,000" /></label></div>)}</div></section>
           </div>
       </main>
       <footer><a className="brand" href="/"><span>AOS</span><small>FURNITURE</small></a><p>Content studio</p><span>© 2026 AOS Furniture</span></footer>
@@ -97,12 +97,13 @@ function PublicSite({ logo, gallery }) {
         <a className="brand" href="#top" aria-label="AOS Furniture home">
           {logo ? <img src={logo} alt="AOS Furniture logo" /> : <><span>AOS</span><small>FURNITURE</small></>}
         </a>
-        <nav className="links reference-links" aria-label="Main navigation"><a className="active" href="#top">Home</a><a href="#story">About</a><a href="#collection">Services</a><a href="#collection">Gallery</a><a href="#story">Masterclass</a><a href="#collection">Shop</a><a href={whatsappLink} target="_blank" rel="noreferrer">Contact</a></nav>
+        <nav className="links reference-links" aria-label="Main navigation"><a className="active" href="#top">Home</a><a href="#story">About</a><a href="#collection">Services</a><a href="#collection">Gallery</a><a href="#story">Masterclass</a><a href="#shop">Shop</a><a href={whatsappLink} target="_blank" rel="noreferrer">Contact</a></nav>
       </header>
       <main id="top">
           <section className="hero" style={{ backgroundImage: `linear-gradient(90deg, rgba(24, 24, 20, .72), rgba(24, 24, 20, .08)), url(${gallery[0]?.src || defaultGallery[0].src})` }}><div className="hero-copy"><p className="eyebrow light">Furniture for living beautifully</p><h1>Rooms that feel<br /><em>like you.</em></h1><p className="hero-text">Thoughtful pieces, honest materials, and a softer way to live. Designed in small batches for the places you call home.</p><a className="circle-link" href="#collection">Explore collection <span>↘</span></a></div><div className="hero-note">EST. 2012 <i /> DESIGNED FOR SLOW LIVING</div></section>
           <section className="intro-band" id="story"><p className="eyebrow">The AOS approach</p><h2>Furniture with a point of view.<br /><span>Made to become part of your story.</span></h2><p>We believe a well-made room changes the way a day feels. Our collection balances warm tactility with quiet, considered forms that let life take center stage.</p></section>
-          <section className="collection" id="collection"><div className="section-heading"><div><p className="eyebrow">The collection</p><h2>Objects of <em>comfort.</em></h2></div><a href="#contact">View all pieces <span>↗</span></a></div><div className="gallery-grid">{gallery.slice(1).map((image, index) => <article className={`gallery-item item-${index + 1}`} key={image.id}><img src={image.src} alt={image.alt} /><div className="image-caption"><span>{['Lounge / 01', 'Dining / 02', 'Accent / 03'][index] || 'Living / 04'}</span><span>↗</span></div></article>)}</div></section>
+          <section className="collection" id="collection"><div className="section-heading"><div><p className="eyebrow">The collection</p><h2>Objects of <em>comfort.</em></h2></div><a href="#shop">View all pieces <span>↗</span></a></div><div className="gallery-grid">{gallery.slice(1).map((image, index) => <article className={`gallery-item item-${index + 1}`} key={image.id}><img src={image.src} alt={image.alt} /><div className="image-caption"><span>{['Lounge / 01', 'Dining / 02', 'Accent / 03'][index] || 'Living / 04'}</span>{image.price && <strong>{image.price}</strong>}<span>↗</span></div></article>)}</div></section>
+          <section className="shop-section" id="shop"><div className="section-heading"><div><p className="eyebrow">Shop the collection</p><h2>Pieces to <em>keep.</em></h2></div><p className="shop-note">Every piece is available by request.<br />Message us on WhatsApp to order.</p></div><div className="shop-grid">{gallery.slice(1).map((image, index) => <article className="shop-card" key={`shop-${image.id}`}><div className="shop-image"><img src={image.src} alt={image.alt} />{image.price && <span className="price-tag">{image.price}</span>}</div><div className="shop-card-info"><span>{image.alt}</span><a href={whatsappLink} target="_blank" rel="noreferrer">Ask about this piece ↗</a></div></article>)}</div></section>
           <section className="quote"><p>“The best rooms are<br /><em>felt</em> before they are seen.”</p><span>— AOS design notes</span></section>
           <section className="contact" id="contact"><div><p className="eyebrow">Let's talk</p><h2>Make room<br />for something <em>good.</em></h2></div><div className="contact-detail"><p>Have a question or want to start a project? Send us a message on WhatsApp and let’s talk about your space.</p><a className="text-link" href={whatsappLink} target="_blank" rel="noreferrer">Chat with us on WhatsApp <span>↗</span></a><p className="address">18 Design District<br />Lagos, Nigeria</p></div></section>
       </main>
