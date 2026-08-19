@@ -41,6 +41,11 @@ function AdminPage({ logo, setLogo, gallery, setGallery, logoInput, galleryInput
   }
 
   const logout = () => { sessionStorage.removeItem('aos-admin-session'); setIsLoggedIn(false) }
+  const saveAndViewSite = () => {
+    if (logo) localStorage.setItem('aos-logo', logo)
+    localStorage.setItem('aos-gallery', JSON.stringify(gallery))
+    window.location.href = '/'
+  }
 
   const readFiles = (files, kind) => {
     Array.from(files).forEach((file) => {
@@ -71,7 +76,7 @@ function AdminPage({ logo, setLogo, gallery, setGallery, logoInput, galleryInput
         <div className="admin-nav"><span>Signed in as admin</span><button className="admin-button" type="button" onClick={logout}>Log out</button></div>
       </header>
       <main className="admin-panel">
-          <div className="admin-intro"><p className="eyebrow">Content studio</p><h1>Make the room yours.</h1><p>Upload your brand mark and the images that tell your story. Changes are saved in this browser and appear across the site instantly.</p></div>
+          <div className="admin-intro"><p className="eyebrow">Content studio</p><h1>Make the room yours.</h1><p>Upload your brand mark and the images that tell your story. Save when you are ready to publish them on the website.</p><button className="save-site-button" type="button" onClick={saveAndViewSite}>Save changes &amp; view site <span>↗</span></button></div>
           <div className="upload-grid">
             <section className="upload-card"><div><p className="eyebrow">Brand identity</p><h2>Company logo</h2><p className="muted">PNG, JPG or SVG</p></div><input ref={logoInput} type="file" accept="image/*" onChange={(event) => readFiles(event.target.files, 'logo')} hidden /><button className="upload-button" onClick={() => logoInput.current?.click()}>Upload logo <span>+</span></button>{logo && <img className="logo-preview" src={logo} alt="Uploaded company logo" />}</section>
             <section className="upload-card"><div><p className="eyebrow">Visual library</p><h2>Gallery images</h2><p className="muted">Add as many as you like</p></div><input ref={galleryInput} type="file" accept="image/*" multiple onChange={(event) => readFiles(event.target.files, 'gallery')} hidden /><button className="upload-button" onClick={() => galleryInput.current?.click()}>Add images <span>+</span></button><div className="admin-gallery">{gallery.map((image) => <div className="admin-image" key={image.id}><img src={image.src} alt={image.alt} /><button onClick={() => setGallery((current) => current.filter((item) => item.id !== image.id))} aria-label={`Remove ${image.alt}`}>×</button></div>)}</div></section>
