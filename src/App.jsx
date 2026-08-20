@@ -104,6 +104,7 @@ function AdminPage({ logo, setLogo, gallery, setGallery, products, setProducts, 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [uploadError, setUploadError] = useState('')
 
   const login = (event) => {
     event.preventDefault()
@@ -129,6 +130,7 @@ function AdminPage({ logo, setLogo, gallery, setGallery, products, setProducts, 
   }
 
   const readFiles = async (files, kind) => {
+    setUploadError('')
     for (const file of Array.from(files)) {
       if (!file.type.startsWith('image/')) continue
       const imageId = createImageId(file.name)
@@ -146,6 +148,7 @@ function AdminPage({ logo, setLogo, gallery, setGallery, products, setProducts, 
       const { error } = await supabase.storage.from('aos-media').upload(path, file, { contentType: file.type, upsert: false })
       if (error) {
         console.error('Could not upload image:', error)
+        setUploadError(`Upload failed: ${error.message}. Check that the aos-media bucket is public and that the Supabase storage policies have been run.`)
         continue
       }
       const { data } = supabase.storage.from('aos-media').getPublicUrl(path)
@@ -173,7 +176,7 @@ function AdminPage({ logo, setLogo, gallery, setGallery, products, setProducts, 
       </header>
       <div className="admin-toolbar"><span>Admin content studio</span><button className="save-site-button" type="button" onClick={saveAndViewSite}>Save &amp; view site <span>↗</span></button></div>
       <main className="admin-panel">
-          <div className="admin-intro"><p className="eyebrow">Content studio</p><h1>Make the room yours.</h1><p>Upload your brand mark and the images that tell your story. Save when you are ready to publish them on the website.</p></div>
+          <div className="admin-intro"><p className="eyebrow">Content studio</p><h1>Make the room yours.</h1><p>Upload your brand mark and the images that tell your story. Save when you are ready to publish them on the website.</p>{uploadError && <p className="form-error upload-error">{uploadError}</p>}</div>
           <div className="upload-grid">
             <section className="upload-card"><div><p className="eyebrow">Brand identity</p><h2>Company logo</h2><p className="muted">PNG, JPG or SVG</p></div><input ref={logoInput} type="file" accept="image/*" onChange={(event) => readFiles(event.target.files, 'logo')} hidden /><button className="upload-button" onClick={() => logoInput.current?.click()}>Upload logo <span>+</span></button>{logo && <img className="logo-preview" src={logo} alt="Uploaded company logo" />}</section>
             <section className="upload-card"><div><p className="eyebrow">Visual library</p><h2>Gallery images</h2><p className="muted">Add images for the visual gallery only. These will not appear in the shop.</p></div><input ref={visualGalleryInput} type="file" accept="image/*" multiple onChange={(event) => { readFiles(event.target.files, 'gallery'); event.target.value = '' }} hidden /><button className="upload-button" type="button" onClick={() => visualGalleryInput.current?.click()}>Add gallery images <span>+</span></button><div className="admin-gallery">{gallery.map((image) => <div className="admin-image" key={image.id}><img src={image.src} alt={image.alt} /><button onClick={() => setGallery((current) => current.filter((item) => item.id !== image.id))} aria-label={`Remove ${image.alt}`}>×</button></div>)}</div></section>
