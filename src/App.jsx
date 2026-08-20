@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import servicesBackground from '../modern-sofa-1024x602.jpg'
-import defaultLogo from '../f75Ke.jpg'
+import defaultLogo from '../f75Ke-removebg-preview.png'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
