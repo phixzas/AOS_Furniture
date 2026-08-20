@@ -113,7 +113,7 @@ function AdminPage({ logo, setLogo, gallery, setGallery, products, setProducts, 
     <div className="site admin-page">
       <header className="nav"><a className="brand" href="/"><img src={defaultLogo} alt="AOS Furniture logo" /></a><a className="back-link" href="/">Back to website <span>↗</span></a></header>
       <main className="login-panel"><div className="login-copy"><p className="eyebrow">Private workspace</p><h1>Welcome<br /><em>back.</em></h1><p>Sign in to manage the images and brand assets shown on your website.</p></div><form className="login-form" onSubmit={login}><label>Email address<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@company.com" required /></label><label>Password<input type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Enter your password" required /></label>{error && <p className="form-error">{error}</p>}<button className="login-button" type="submit">Sign in <span>↗</span></button><p className="login-note">Admin credentials are configured with <code>VITE_ADMIN_EMAIL</code> and <code>VITE_ADMIN_PASSWORD</code>.</p></form></main>
-      <footer><a className="brand" href="/"><img src={defaultLogo} alt="AOS Furniture logo" /></a><span>© 2026 AOS Furniture</span></footer>
+      <footer><span>© 2026 AOS Furniture</span></footer>
     </div>
   )
 
@@ -135,7 +135,7 @@ function AdminPage({ logo, setLogo, gallery, setGallery, products, setProducts, 
             <section className="upload-card services-editor"><div><p className="eyebrow">Services page</p><h2>Service names</h2><p className="muted">Edit existing services or add more for the Services page. Each one includes a Book now button to WhatsApp.</p></div><div className="service-name-grid">{services.map((service) => <div className="service-name-field" key={service.id}><span>{service.eyebrow}</span><input aria-label={`Name for ${service.eyebrow}`} value={service.name} onChange={(event) => setServices((current) => current.map((item) => item.id === service.id ? { ...item, name: event.target.value } : item))} /><button className="delete-item-button" type="button" onClick={() => setServices((current) => current.filter((item) => item.id !== service.id))}>Delete service</button></div>)}</div><button className="upload-button service-add-button" type="button" onClick={() => setServices((current) => [...current, { id: createServiceId(), name: 'New service', eyebrow: `${String(current.length + 1).padStart(2, '0')} / New service`, copy: '' }])}>Add another service <span>+</span></button></section>
           </div>
       </main>
-      <footer><a className="brand" href="/"><img src={logo || defaultLogo} alt="AOS Furniture logo" /></a><p>Content studio</p><span>© 2026 AOS Furniture</span></footer>
+      <footer><p>Content studio</p><span>© 2026 AOS Furniture</span></footer>
     </div>
   )
 }
@@ -167,7 +167,7 @@ function GalleryPage({ logo, gallery }) {
       <main>
         <section className="gallery-section" id="gallery"><div className="section-heading"><div><p className="eyebrow">The gallery</p><h1>Spaces with <em>soul.</em></h1></div><p className="shop-note">A closer look at the details, textures,<br />and rooms behind the AOS collection.</p></div><div className="gallery-wall">{gallery.map((image, index) => <figure className={`gallery-wall-item gallery-wall-${index + 1}`} key={`gallery-page-${image.id}`}><img src={image.src} alt={image.alt} /><figcaption>{String(index + 1).padStart(2, '0')} / AOS FURNITURE</figcaption></figure>)}</div></section>
       </main>
-      <footer><a className="brand" href="/"><img src={logo || defaultLogo} alt="AOS Furniture logo" /></a><span>© 2026 AOS Furniture</span></footer>
+      <footer><span>© 2026 AOS Furniture</span></footer>
     </div>
   )
 }
@@ -203,7 +203,7 @@ function PublicSite({ logo, gallery, products, services }) {
           <section className="quote"><p>“The best rooms are<br /><em>felt</em> before they are seen.”</p><span>— AOS design notes</span></section>
           <section className="contact" id="contact"><div><p className="eyebrow">Let's talk</p><h2>Make room<br />for something <em>good.</em></h2></div><div className="contact-detail"><p>Have a question or want to start a project? Send us a message on WhatsApp and let’s talk about your space.</p><div className="contact-links"><a className="text-link" href={whatsappLink} target="_blank" rel="noreferrer">Chat with us on WhatsApp <span>↗</span></a><a className="instagram-link" href={instagramLink} target="_blank" rel="noreferrer" aria-label="Follow AOS Furniture on Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" /></svg><span>Instagram</span><b>↗</b></a></div></div><div className="location-grid"><article className="location-card"><p className="eyebrow">Head Office</p><div className="address"><p>184 Ipaja Rd<br />Idimu, Lagos 102213<br />Lagos, Nigeria</p><a className="map-link" href={mapsLink} target="_blank" rel="noreferrer">Open pin 01 <span>↗</span></a></div></article><article className="location-card"><p className="eyebrow">Branch</p><div className="address"><p>Imperial De-Vine Dews School<br />65 Agbado New Rd, Ifako-Ijaiye<br />Lagos 112105, Nigeria</p><a className="map-link" href={secondMapsLink} target="_blank" rel="noreferrer">Open pin 02 <span>↗</span></a></div></article><div className="map-frame combined-map"><LocationMap /><a className="combined-map-link" href={combinedMapsLink} target="_blank" rel="noreferrer">Open both locations in Google Maps <span>↗</span></a></div></div></section>
       </main>
-      <footer><a className="brand" href="#top"><img src={logo || defaultLogo} alt="AOS Furniture logo" /></a><p>Made for the way you live.</p><span>© 2026 AOS Furniture · Since 1989</span></footer>
+      <footer><p>Made for the way you live.</p><span>© 2026 AOS Furniture · Since 1989</span></footer>
     </div>
   )
 }
