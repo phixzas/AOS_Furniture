@@ -65,6 +65,10 @@ function App() {
   useEffect(() => {
     let active = true
     const loadContent = async () => {
+      if (!supabase) {
+        if (active) setContentLoaded(true)
+        return
+      }
       const { data, error } = await supabase.from('site_content').select('logo, gallery, products, services').eq('id', 1).maybeSingle()
       if (error) console.error('Could not load shared site content:', error)
       if (active && data) {
@@ -80,6 +84,7 @@ function App() {
   }, [])
   useEffect(() => {
     if (!contentLoaded) return undefined
+    if (!supabase) return undefined
     const saveContent = async () => {
       const { error } = await supabase.from('site_content').upsert({ id: 1, logo, gallery, products, services, updated_at: new Date().toISOString() })
       if (error) console.error('Could not save shared site content:', error)
@@ -127,6 +132,16 @@ function AdminPage({ logo, setLogo, gallery, setGallery, products, setProducts, 
     for (const file of Array.from(files)) {
       if (!file.type.startsWith('image/')) continue
       const imageId = createImageId(file.name)
+      if (!supabase) {
+        const reader = new FileReader()
+        reader.onload = () => {
+          if (kind === 'logo') setLogo(reader.result)
+          else if (kind === 'product') setProducts((current) => [...current, { id: imageId, src: reader.result, alt: file.name, price: '' }])
+          else setGallery((current) => [...current, { id: imageId, src: reader.result, alt: file.name, price: '' }])
+        }
+        reader.readAsDataURL(file)
+        continue
+      }
       const path = `${kind}/${imageId}`
       const { error } = await supabase.storage.from('aos-media').upload(path, file, { contentType: file.type, upsert: false })
       if (error) {
