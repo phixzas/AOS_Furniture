@@ -2,6 +2,8 @@
 
 ## Render deployment
 
+Run `supabase/site-content.sql` in the Supabase SQL Editor, then add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` to Render. The `aos-media` bucket must be public. This makes admin uploads and content shared across phones and computers.
+
 In the Render service settings, add these environment variables before deploying:
 
 - `VITE_ADMIN_EMAIL`: the admin email address

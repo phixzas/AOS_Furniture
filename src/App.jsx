@@ -8,6 +8,7 @@ import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
 import markerIcon from 'leaflet/dist/images/marker-icon.png'
 import markerShadow from 'leaflet/dist/images/marker-shadow.png'
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
+import { supabase } from './supabase'
 
 L.Icon.Default.mergeOptions({ iconRetinaUrl: markerIcon2x, iconUrl: markerIcon, shadowUrl: markerShadow })
 
@@ -52,6 +53,7 @@ function App() {
   const [gallery, setGallery] = useState(() => readStoredJson('aos-gallery', defaultGallery))
   const [products, setProducts] = useState(() => readStoredJson('aos-products', readStoredJson('aos-gallery', defaultGallery).slice(1)))
   const [services, setServices] = useState(() => readStoredJson('aos-services', defaultServices))
+  const [contentLoaded, setContentLoaded] = useState(false)
   const logoInput = useRef(null)
   const visualGalleryInput = useRef(null)
   const galleryInput = useRef(null)
@@ -60,6 +62,31 @@ function App() {
   useEffect(() => localStorage.setItem('aos-products', JSON.stringify(products)), [products])
   useEffect(() => { if (logo) localStorage.setItem('aos-logo', logo) }, [logo])
   useEffect(() => localStorage.setItem('aos-services', JSON.stringify(services)), [services])
+  useEffect(() => {
+    let active = true
+    const loadContent = async () => {
+      const { data, error } = await supabase.from('site_content').select('logo, gallery, products, services').eq('id', 1).maybeSingle()
+      if (error) console.error('Could not load shared site content:', error)
+      if (active && data) {
+        setLogo(data.logo || '')
+        setGallery(data.gallery || defaultGallery)
+        setProducts(data.products || defaultGallery.slice(1))
+        setServices(data.services || defaultServices)
+      }
+      if (active) setContentLoaded(true)
+    }
+    loadContent()
+    return () => { active = false }
+  }, [])
+  useEffect(() => {
+    if (!contentLoaded) return undefined
+    const saveContent = async () => {
+      const { error } = await supabase.from('site_content').upsert({ id: 1, logo, gallery, products, services, updated_at: new Date().toISOString() })
+      if (error) console.error('Could not save shared site content:', error)
+    }
+    const timeout = window.setTimeout(saveContent, 300)
+    return () => window.clearTimeout(timeout)
+  }, [contentLoaded, logo, gallery, products, services])
 
   if (isAdminRoute) return <AdminPage logo={logo} setLogo={setLogo} gallery={gallery} setGallery={setGallery} products={products} setProducts={setProducts} services={services} setServices={setServices} logoInput={logoInput} visualGalleryInput={visualGalleryInput} galleryInput={galleryInput} />
   if (isGalleryRoute) return <GalleryPage logo={logo} gallery={gallery} />
@@ -96,17 +123,21 @@ function AdminPage({ logo, setLogo, gallery, setGallery, products, setProducts, 
     window.location.href = '/'
   }
 
-  const readFiles = (files, kind) => {
-    Array.from(files).forEach((file) => {
-      if (!file.type.startsWith('image/')) return
-      const reader = new FileReader()
-      reader.onload = () => {
-        if (kind === 'logo') setLogo(reader.result)
-        else if (kind === 'product') setProducts((current) => [...current, { id: createImageId(file.name), src: reader.result, alt: file.name, price: '' }])
-        else setGallery((current) => [...current, { id: createImageId(file.name), src: reader.result, alt: file.name, price: '' }])
+  const readFiles = async (files, kind) => {
+    for (const file of Array.from(files)) {
+      if (!file.type.startsWith('image/')) continue
+      const imageId = createImageId(file.name)
+      const path = `${kind}/${imageId}`
+      const { error } = await supabase.storage.from('aos-media').upload(path, file, { contentType: file.type, upsert: false })
+      if (error) {
+        console.error('Could not upload image:', error)
+        continue
       }
-      reader.readAsDataURL(file)
-    })
+      const { data } = supabase.storage.from('aos-media').getPublicUrl(path)
+      if (kind === 'logo') setLogo(data.publicUrl)
+      else if (kind === 'product') setProducts((current) => [...current, { id: imageId, src: data.publicUrl, alt: file.name, price: '' }])
+      else setGallery((current) => [...current, { id: imageId, src: data.publicUrl, alt: file.name, price: '' }])
+    }
   }
 
   if (!isLoggedIn) return (
